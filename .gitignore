@@ -1,0 +1,11 @@
+# ディレクトリ
+/OLD/
+/HIDE/
+/__pycache__/
+
+# gpファイル
+*.plt
+*.gp
+
+# その他のファイル
+parameter.py

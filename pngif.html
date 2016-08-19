@@ -1,0 +1,74 @@
+<!--
+pngif.html ver5.0
+<<自己紹介>>
+gifやpngを同時に描画するため、重たいgifの同期のために作成したhtml
+<<使い方>>
+html_maker.plによって書き換えコピーされる雛形
+<<改造予定>>
+「gifがずれるときは更新押して」のメッセージ←Cドライブ上ではShiftJIS効くのにサーバー上では宣言してもShiftJISが効いてくれないんだが
+日付ごとにまとめる親HTMLファイルの作成
+配置がばらばら。後で直す
+<<UPDATE5.0>>
++ svgファイルの説明
++ ファイルを4つに絞った(インデント下げはリンク先のsvgファイルをさす)
+	waterfall_spectrum.gif
+	allplt_waterfall.png
+		allplt_waterfall.svg
+	mat1d.png
+		mat1d.svg
+	mlt2time.png
+		mlt2time.svg
+<<UPDATE4.5>>
+svgの説明を追加
+ファイル一覧のリンクを追加
+<<UPDATE4.4>>
+mat__date__.pngとmlt2time__date__.svgの位置あわせ(table css から抜いた)
+<<UPDATE4.3>>
+  [クリックでsvg表示]の表記を追加
+<<UPDATE4.2>>
+・リンク貼られていなかったところ修正
+<<UPDATE3.0>>
+新しいウォーターフォールの形式cpl_wtf.gifに対応した
+<<UPDATE2.0>>
+ウィンドウサイズを拡大縮小しても配置がずれない工夫として、tableのCSS導入した。一つ上の階層においてある。
+ -->
+<html>
+<head>
+<title>_____title_____</title>
+<link rel="stylesheet" href="../style.css" type="text/css" />
+</head>
+<body>
+	<div>
+		<font size="4">
+			<p>「クリックでsvg表示」をクリックすると、svgファイルのページにジャンプします。</p>
+			<p>svg上では次のことができます</p>
+			<p>1. ポインタが指している場所の座標表示(svg上で左クリック)</p>
+			<p>2. プロットの表示/非表示の切り替え(凡例を左クリック)</p>
+			<p>ファイル一覧は<a href=".">こちら</a></p>
+		</font>
+	</div>
+
+
+
+
+
+
+
+	<div class="table">
+		<div><img align="left" img src="waterfall_spectrum_____date_____.gif" width=600></div>
+		<br>
+		<div><a href = "code\allplt_wtf_____date_____.svg" target="_self"><img align="right" img src="allplt_wtf_____date_____.png" width=600>  <font size="4">クリックでsvg表示</font></a></div>
+	</div>
+
+
+
+	<div class="table">
+		<div>
+			<br>
+			<a href = "code\mat_____date_____.svg" target="_self"><img align="right" img src="mat_____date_____.png" hight=800>  <font size="4">クリックでsvg表示</font></a>
+		</div>
+		<div class="rotate">
+			<a href = "code\mlt2time_____date_____.svg" target="_self"><img align="top" img src="code\mlt2time_____date_____.svg" width=800>  <font size="4">クリックでsvg表示</font></a>
+		</div>
+	</div>
+
