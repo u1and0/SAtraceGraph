@@ -84,23 +84,46 @@ def makefile(fullpath):
 
 
 
+# def makeMiddlePoint(li,delta):
+# 	'''
+# 	引数:
+# 		li:リスト
+# 		delta:datetime
+# 	戻り値：twoの間に入れる値をyield
+# 	'''
+# 	for two in list(pairwise(li)):   #liの中身を2つずつにわける
+# 		if two[-1]-two[0]>=delta +timedelta(minutes=1):   #抜き出したタプルの要素の差がdelta上であれば
+# 			print('\nLack between %s and %s'% (two[0],two[1]))
+# 			print('Substract',abs(two[0]-two[1]))
+# 			for i in pltd.drange(two[0]+delta,two[-1],delta):
+# 				li.insert(li.index(two[-1]),pltd.num2date(i))   #タプルの要素間の場所にdeltaずつ増やした値を入れる
+# 				print('insert',pltd.num2date(i))
+# 				yield pltd.num2date(i).strftime('%Y%m%d_%H%M%S')
+# 	print('\nThere is No point to insert')
+# 	print('makeMiddlePoint END\n')
+
+
+
 def makeMiddlePoint(li,delta):
 	'''
 	引数:
 		li:リスト
 		delta:datetime
 	戻り値：twoの間に入れる値をyield
+	makeMiddlePointは1個ずつしか吐き出さない
+	mainの方でwhileループして穴埋めしていく(makeするたびにglobするから。)
 	'''
 	for two in list(pairwise(li)):   #liの中身を2つずつにわける
 		if two[-1]-two[0]>=delta +timedelta(minutes=1):   #抜き出したタプルの要素の差がdelta上であれば
 			print('\nLack between %s and %s'% (two[0],two[1]))
 			print('Substract',abs(two[0]-two[1]))
-			for i in pltd.drange(two[0]+delta,two[-1],delta):
-				li.insert(li.index(two[-1]),pltd.num2date(i))   #タプルの要素間の場所にdeltaずつ増やした値を入れる
-				print('insert',pltd.num2date(i))
-				yield pltd.num2date(i).strftime('%Y%m%d_%H%M%S')
-	print('\nThere is No point to insert')
-	print('makeMiddlePoint END\n')
+			insert_point=pltd.num2date(two[0]+delta)
+			li.insert(li.index(two[-1]),insert_point)   #タプルの要素間の場所にdeltaずつ増やした値を入れる
+			print('insert',pltd.num2date(i))
+		else:
+			print('\nThere is No point to insert')
+			print('makeMiddlePoint END\n')
+		return pltd.num2date(i).strftime('%Y%m%d_%H%M%S')
 
 
 
@@ -214,12 +237,12 @@ def filecheck(directory):
 	filenum=288
 	while not len(glob.glob(directory+'*'+'.txt'))==filenum:   #globして288個ならココは実行しない
 		try:
-			if len(glob.glob(directory+'*'+'.txt'))>filenum:
+			if len(glob.glob(directory+'*'+'.txt'))>filenum:   #ファイル数が多すぎればエラー
 				raise ValueError
 		except ValueError:
 			print('ファイル数が%d個以上！処理を中断します。'% filenum)
 			print('生データを編集して、"%s/code"内にあるgpファイルを手動で動かしてください。'% out1+when)
-		else:
+		else:   #ファイル数が少なければファイル埋め
 			if len(glob.glob(directory+'*'+'.txt'))<filenum:
 				filefiller(directory)
 	else:
