@@ -175,8 +175,7 @@ def filecheck(directory):
 			raise
 		else:   #ファイル数が少なければファイル埋め
 			# if len(glob.glob(directory+'*'+'.txt'))<filenum:
-			print('ファイル数が%d個'% get_filenum)
-			print('\n',directory,'内のファイル数を調整します','\n')
+			print('\n',directory,'内のファイル数を%d個から%d個に調整します\n'% (get_filenum,filenum))
 			filefiller(directory)
 	else:
 		print('After:Number of Files is',len(globfile(directory,extention='.txt')))   #Check number of files
