@@ -130,53 +130,6 @@ def makeMiddlePoint(li,delta):
 
 
 
-'''try-except-else　で条件に見合うまでfor文に戻ろうと思ったやつ'''
-# def makeMiddlePoint(li,delta):
-# 	'''
-# 	引数:
-# 		li:リスト
-# 		delta:datetime
-# 	戻り値：twoの間に入れる値をyield
-# 	'''
-# 	# flag=True
-# 	while True:
-# 		try:
-# 			for two in list(pairwise(li)):   #liの中身を2つずつにわけて差分を調べる
-# 				if two[-1]-two[0]>=delta +timedelta(minutes=1):   #抜き出したタプルの要素の差がdelta以上であれば
-# 					print('\nLack between %s and %s'% (two[0],two[1]))
-# 					print('Substract',abs(two[0]-two[1]))
-# 					for i in pltd.drange(two[0]+delta,two[-1],delta):
-# 						li.insert(li.index(two[-1]),pltd.num2date(i))   #タプルの要素間の場所にdeltaずつ増やした値を入れる
-# 						print('insert',pltd.num2date(i))
-
-# 						# print(li)
-
-# 						yield pltd.num2date(i).strftime('%Y%m%d_%H%M%S')   #insertした値を外に渡して
-# 						raise   #yieldしたらもう一度pairwiseにもどる
-# 		except:
-# 			print('TryAgain')
-# 			# pass
-# 		else:   #一度もraiseがでない(差分がdelta以上にならない)ければ
-# 			# flag=False   #flagをFalseにしてwhile True抜ける
-# 			print('\nThere is No point to insert')
-# 			print('makeMiddlePoint END\n')
-# 			break   #if節に一度も引っかからなければflagをFalseにしてwhileから抜ける
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def makeStartPoint(li):
 	'''始点要素の作製'''
 	while True :
@@ -214,7 +167,6 @@ def filefiller(directory,extention='.txt'):
 	makeStopPoint:最後の要素から23:59に向けて5分間隔でデータ作る
 	'''
 	datetimeObject=globfile(directory,extention)
-	print('\n',directory,'内のファイル数を調整します','\n')
 	print('Before:Number of Files is',len(datetimeObject))   #Check number of files
 	print('-'*20)
 	for i in makeMiddlePoint(datetimeObject,timedelta(minutes=5)):   #5分間隔でデータを挿入
@@ -237,14 +189,17 @@ def filecheck(directory):
 	filenum=288
 	while not len(glob.glob(directory+'*'+'.txt'))==filenum:   #globして288個ならココは実行しない
 		try:
-			if len(glob.glob(directory+'*'+'.txt'))>filenum:   #ファイル数が多すぎればエラー
-				raise ValueError
-		except ValueError:
-			print('ファイル数が%d個以上！処理を中断します。'% filenum)
-			print('生データを編集して、"%s/code"内にあるgpファイルを手動で動かしてください。'% out1+when)
+			get_filenum=len(glob.glob(directory+'*'+'.txt'))
+			if get_filenum>filenum:   #ファイル数が多すぎればエラー
+				raise ValueError(get_filenum)
+		except ValueError:   #ファイル数が多ければエラー
+			print('ファイル数が%d個！処理を中断します。'% get_filenum)
+			print('生データを編集して、"%s/code"内にあるgpファイルを手動で動かしてください。'%directory)
+			raise
 		else:   #ファイル数が少なければファイル埋め
-			if len(glob.glob(directory+'*'+'.txt'))<filenum:
-				filefiller(directory)
+			# if len(glob.glob(directory+'*'+'.txt'))<filenum:
+			print('\n',directory,'内のファイル数を%d個から%d個に調整します\n'% (get_filenum,filenum))
+			filefiller(directory)
 	else:
 		print('After:Number of Files is',len(globfile(directory,extention='.txt')))   #Check number of files
 		print('ファイル数を288個にできました。グラフ化処理を続行します。')

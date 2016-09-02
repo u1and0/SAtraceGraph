@@ -1,5 +1,6 @@
 # ディレクトリ
 /OLD/
+/PDF/
 /HIDE/
 /__pycache__/
 
@@ -8,4 +9,6 @@
 *.gp
 
 # その他のファイル
-parameter.py
+param*.py
+*.sublime-project
+*.sublime-workspace

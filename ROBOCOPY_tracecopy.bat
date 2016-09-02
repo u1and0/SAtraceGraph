@@ -1,21 +1,23 @@
 ::-----------------------------------------------------------------------
-::# ROBOCOPY_tracecopy.bat ver1.2
-::# <<���ȏЉ�>>
-::�T�[�o�[��̃~���[�����O�t�H���_����w��t�H���_��
-::�w�肳�ꂽ���t�^�C���X�^���v���������f�[�^���R�s�[����
-::# <<�g����>>
-::when �R�s�[���s���ŏ��̓��t
-::whenlast �R�s�[���s���Ō�̓��t
-::ttle �^�C�g��
-::out1 gif��png�̏o�͐�f�B���N�g��(�p�X�̓o�b�N�X���b�V��)
+::# ROBOCOPY_tracecopy.bat ver1.3
+::# <<自己紹介>>
+::サーバー上のミラーリングフォルダから指定フォルダへ
+::指定された日付タイムスタンプがついた生データをコピーする
+::# <<使い方>>
+::when コピーを行う最初の日付
+::whenlast コピーを行う最後の日付
+::ttle タイトル
+::out1 gifやpngの出力先ディレクトリ(パスはバックスラッシュ)
+::<<UPDATE1.3>>
+::/MIN:40000:40kB未満のファイルはコピーしない
 ::<<UPDATE1.2>>
-::�\�[�X�f�B���N�g�����O���t�@�C������w��
+::ソースディレクトリも外部ファイルから指定
 ::	set Source_directory=%5
 ::<<UPDATE1.1>>
-::Copy_options��/XO��ǉ�����
-::/XO �R�s�[���ƃR�s�[����r���ăR�s�[�����Â��ꍇ�A���̃t�@�C�������O���܂�
-::# <<�����\��>>
-::�Ȃ�
+::Copy_optionsに/XOを追加した
+::/XO コピー元とコピー先を比較してコピー元が古い場合、そのファイルを除外します
+::# <<改造予定>>
+::なし
 ::-----------------------------------------------------------------------
 @echo off
 set when=%1
@@ -23,30 +25,30 @@ set whenlast=%2
 set ttle=%3
 set out1=%4
 ::-----------------------------------DIRECTRY------------------------------------
-::�R�s�[��(�f�[�^�t�@�C���̃��[�g�f�B���N�g��)
+::コピー元(データファイルのルートディレクトリ)
 set Source_directory=%5
-::�R�s�[��(�o�̓f�B���N�g��)
+::コピー先(出力ディレクトリ)
 set Destination_directory=%out1%%ttle%\rawdata\trace
-	::���O�f�B���N�g��
+	::ログディレクトリ
 	::set Log_directory=./hogehogefoobar
 
 
 ::-----------------------------------OPTIONS------------------------------------
-::n���O�̃f�[�^�͖���
+::n日前のデータは無視
 	set Olddata=20%when%
 	set Newdata=20%whenlast%
-::���g���C�񐔁A����
+::リトライ回数、時間
 	set Retrycount=1
 	set Retrytime=1
 
 
 
 
-set Copy_options=/MIR /MAXAGE:%Olddata% /MINAGE:%Newdata% /XO /XX
-	::/(MAX|MIN)AGE:n �w�肵�������܂��͓��t���(�Â�|�V����)�X�V�����̃t�@�C�����R�s�[���ɂ���ꍇ�A���������O���܂��Bn �ɂ͉ߋ��ɂ����̂ڂ�����A�܂��͎��ۂ̓��t���uYYYYMMDD�v�̌`���Ŏw�肵�܂�
-	::/MIR �~���[�����O(�R�s�[���ƃR�s�[��̃t�@�C�����ƃf�[�^�𓯂���Ԃɂ���)���s���܂��B
-	::/XO �R�s�[���ƃR�s�[����r���ăR�s�[�����Â��ꍇ�A���̃t�@�C�������O���܂�
-	::/XX �R�s�[��ɂ̂ݑ��݂���t�@�C����f�B���N�g�������O�ΏۂƂ��܂�(eXclude eXtra files and directories)�B/PURGE �ƂƂ��Ɏw�肳��Ă���� /PURGE �̌��ʂ��قڎ����܂��B
+set Copy_options=/MIR /MAXAGE:%Olddata% /MINAGE:%Newdata% /XO /XX /MIN:40000
+	::/(MAX|MIN)AGE:n 指定した日数または日付より(古い|新しい)更新日時のファイルがコピー元にある場合、それらを除外します。n には過去にさかのぼる日数、または実際の日付を「YYYYMMDD」の形式で指定します
+	::/MIR ミラーリング(コピー元とコピー先のファイル数とデータを同じ状態にする)を行います。
+	::/XO コピー元とコピー先を比較してコピー元が古い場合、そのファイルを除外します
+	::/XX コピー先にのみ存在するファイルやディレクトリを除外対象とします(eXclude eXtra files and directories)。/PURGE とともに指定されていると /PURGE の効果がほぼ失われます。
 set Retry_options=/R:%Retrycount% /W:%Retrytime%
 ::-----------------------------------SET TIME------------------------------------
 ::	set YYYYMMDD=%date:~0,4%%date:~5,2%%date:~8,2%
