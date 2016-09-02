@@ -8,4 +8,4 @@
 *.gp
 
 # その他のファイル
-parameter.py
+param*.py

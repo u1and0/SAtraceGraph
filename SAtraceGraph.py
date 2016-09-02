@@ -73,22 +73,20 @@ gnuplotファイルをawkとか使って別のところから引っ張ってき�
 
 
 
+## __USER MODULE__________________________
+import filefiller as ff
+import param
+param=param.param()
+out1=param['out1']    #出力ディレクトリ
+in1=param['in1']    #データソース
 
 
 
-
-'''
-__MAIN__________________________
-出力先ディレクトリ(parameter.pyで指定)
-'''
-import parameter as di
-out1=di.param()['out1']    #出力ディレクトリ
-in1=di.param()['in1']    #出力ディレクトリ
-
+## __BUILTIN MODULE__________________________
+import glob
 import os
 source1=os.getcwd()+'\\'    #このファイルのワーキングディレクトリ
 source1=source1.replace('\\','/')    #バックスラッシュ、スラッシュ変換
-
 
 
 
@@ -115,7 +113,7 @@ for i in dm.dateiter(dateFirst, dateLast):
 	when=i.strftime('%y%m%d')
 	whenlast=(i+d.timedelta(1)).strftime('%y%m%d')  #whenの次の日付
 	print('Date is %s'% when)
-
+	tracedir=out1+when+'/rawdata/trace/'
 
 
 
@@ -167,10 +165,13 @@ for i in dm.dateiter(dateFirst, dateLast):
 	# print(plcmd)
 	# os.system(plcmd)
 
-	import filefiller as ff
-	ff.filecheck(out1+when+'/rawdata/trace/')   #ファイル名から時刻差分をとってダミーファイルの作成、リネームしてくれる
-					   #たまに289ファイルになっちゃう
 
+	filenum=len(glob.glob(tracedir+'*.txt'))
+	print('グラフ化対象のファイル数 %d個' %filenum)
+	if not filenum==288:
+		ff.filecheck(tracedir)   #ファイル名から時刻差分をとってダミーファイルの作成、リネームしてくれる
+					   #たまに289ファイルになっちゃう
+	else:print('ファイルは%d個あります。' %filenum)
 
 
 	print('\n__マトリックスデータを作成する__________________________ ')
