@@ -74,7 +74,10 @@ gnuplotファイルをawkとか使って別のところから引っ張ってき�
 
 
 ## __USER MODULE__________________________
+# import sys
+# sys.path.append('./filefiller')  #importできるディレクトリ追加
 import filefiller as ff
+
 import param
 param=param.param()
 out1=param['out1']    #出力ディレクトリ
@@ -104,10 +107,6 @@ date2=dm.dateinput('グラフ化する最後の日付を入力>>> ')
 import datetime
 d=datetime
 
-# dateFirst='160609'
-# dateLast='160609'
-import sys
-sys.path.append('./filefiller')  #importできるディレクトリ追加
 
 for i in dm.dateiter(dateFirst, dateLast):
 	when=i.strftime('%y%m%d')
