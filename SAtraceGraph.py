@@ -160,11 +160,6 @@ for i in dm.dateiter(dateFirst, dateLast):
 
 
 	print('\n__データ数を288個にする__________________________ ')
-	# plcmd='perl -w filefiller.pl %s %s'%(out1,when)
-	# print(plcmd)
-	# os.system(plcmd)
-
-
 	filenum=len(glob.glob(tracedir+'*.txt'))
 	print('グラフ化対象のファイル数 %d個' %filenum)
 	if not filenum==288:
