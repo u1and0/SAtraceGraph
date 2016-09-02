@@ -170,7 +170,7 @@ for i in dm.dateiter(dateFirst, dateLast):
 	if not filenum==288:
 		ff.filecheck(tracedir)   #ファイル名から時刻差分をとってダミーファイルの作成、リネームしてくれる
 					   #たまに289ファイルになっちゃう
-	else:print('ファイルは%d個あります。' %filenum)
+	else:print('ファイルは%d個あるので処理を続行します。' %filenum)
 
 
 	print('\n__マトリックスデータを作成する__________________________ ')
