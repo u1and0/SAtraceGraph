@@ -53,6 +53,7 @@ import glob
 from itertools import *
 from more_itertools import *
 from datetime import timedelta
+import datetime
 import time
 import matplotlib.dates as pltd
 import pandas as pd
@@ -83,6 +84,32 @@ def makefile(fullpath):
 		f.write(c)
 
 
+def makeStartPoint(li):
+	'''始点要素の作製'''
+	while True :
+		start=li[0]   #始点を探す
+		if start.hour==0 and 0<=start.minute<5:   #始点の条件クリアでループ終了
+			print('\nFirst element is',start)
+			print('makeStartPoint END\n')
+			break
+		li.insert(0,start-timedelta(minutes=5))   #リストの最初に5分前の値をリストに格納
+		print('Inserted',li[0])
+		yield li[0].strftime('%Y%m%d_%H%M%S')
+
+
+def makeStopPoint(li):
+	'''終点要素の作製'''
+	while True :
+		stop=li[-1]   #終点を探す
+		if stop.hour==23 and 55<=stop.minute<60:   #終点の条件クリアでループ終了
+			print('\nLast element is',stop)
+			print('makeStopPoint END\n')
+			break
+		li.append(stop+timedelta(minutes=5))   #リストの最初に5分前の値をリストに格納
+		print('Appended',li[-1])
+		yield li[-1].strftime('%Y%m%d_%H%M%S')
+
+
 def makeMiddlePoint(li,delta):
 	'''
 	引数:
@@ -110,40 +137,14 @@ def makeMiddlePoint(li,delta):
 
 
 '''TEST makeMiddlePoint
-dali=pd.date_range('20160813', '20160814', freq='5T%sS'%np.random.randint(0,60))
-dali_droped=dali.drop(np.random.choice(dali))
-# daliからランダムな値を抽出(choice)し
-# ランダムな値をdaliから削除
-i = makeMiddlePoint(list(dali_droped), timedelta(minutes=5))
-print(i)
+for _ in range(10):
+	dali=pd.date_range('20160813', '20160814', freq='5T%sS'%np.random.randint(0,60))
+	dali_droped=dali.drop(np.random.choice(dali))
+	# daliからランダムな値を抽出(choice)し
+	# ランダムな値をdaliから削除
+	i = makeMiddlePoint(list(dali_droped), timedelta(minutes=5))
+	print(i)
 '''
-
-
-def makeStartPoint(li):
-	'''始点要素の作製'''
-	while True :
-		start=li[0]   #始点を探す
-		if start.hour==0 and 0<=start.minute<5:   #始点の条件クリアでループ終了
-			print('\nFirst element is',start)
-			print('makeStartPoint END\n')
-			break
-		li.insert(0,start-timedelta(minutes=5))   #リストの最初に5分前の値をリストに格納
-		print('Inserted',li[0])
-		yield li[0].strftime('%Y%m%d_%H%M%S')
-
-
-def makeStopPoint(li):
-	'''終点要素の作製'''
-	while True :
-		stop=li[-1]   #終点を探す
-		if stop.hour==23 and 55<=stop.minute<60:   #終点の条件クリアでループ終了
-			print('\nLast element is',stop)
-			print('makeStopPoint END\n')
-			break
-		li.append(stop+timedelta(minutes=5))   #リストの最初に5分前の値をリストに格納
-		print('Appended',li[-1])
-		yield li[-1].strftime('%Y%m%d_%H%M%S')
-
 
 
 # __MAIN__________________________
@@ -155,21 +156,21 @@ def filefiller(directory,extention='.txt'):
 	makeStartPoint:最初の要素から00:00に向けて5分間隔でデータ作る
 	makeStopPoint:最後の要素から23:59に向けて5分間隔でデータ作る
 	'''
-	filename=glob.glob1(directory,'*' + extention)
-	datetimeObject=[datetime.datetime.strptime(i[:-1*len(extention)],'%Y%m%d_%H%M%S') for i in filename]
+	filename=glob.glob1(directory,'*')
+	datetimeObject=[datetime.datetime.strptime(i[:-1*len(extention)],'%Y%m%d_%H%M%S') for i in filename]  # filebasenameのみ返す
 	# datetimeObject=globfile(directory,extention)
-	print('Before:Number of Files is',len(datetimeObject))   #Check number of files
 	print('-'*20)
 	i = makeMiddlePoint(datetimeObject,timedelta(minutes=5))  #5分間隔でデータを挿入
 	# for i in makeMiddlePoint(datetimeObject,timedelta(minutes=5)):   #5分間隔でデータを挿入
-	makefile(directory+i+extention)
-	print('-'*20)
-	for i in makeStartPoint(datetimeObject):   #始点を作製
+	if i:
 		makefile(directory+i+extention)
 	print('-'*20)
-	for i in makeStopPoint(datetimeObject):   #終点を作製
+	for i in makeStartPoint(datetimeObject):  # 始点を作製
 		makefile(directory+i+extention)
-	print('-'*20)
+		print('-'*20)
+	for i in makeStopPoint(datetimeObject):  # 終点を作製
+		makefile(directory+i+extention)
+		print('-'*20)
 
 
 def filecheck(directory):
@@ -179,23 +180,24 @@ def filecheck(directory):
 	ファイル数288より多い => エラー吐き出して処理中断
 	'''
 	filenum=288
-	while not len(glob.glob1(directory, '*'+'.txt'))==filenum:   #globして288個ならココは実行しない
+	while not len(glob.glob1(directory, '*'))==filenum:   #globして288個ならココは実行しない
+		get_filenum=len(glob.glob1(directory, '*'))
+		print('Before: Number of Files is',get_filenum)   #Check number of files
 		try:
-			get_filenum=len(glob.glob1(directory+'*'+'.txt'))
-			if get_filenum>filenum:   #ファイル数が多すぎればエラー
+			if get_filenum > filenum:   #ファイル数が多すぎればエラー
 				raise ValueError(get_filenum)
 		except ValueError:   #ファイル数が多ければエラー
 			print('ファイル数が%d個！処理を中断します。'% get_filenum)
 			print('生データを編集して、"%s/code"内にあるgpファイルを手動で動かしてください。'%directory)
 			raise
 		else:   #ファイル数が少なければファイル埋め
-			# if len(glob.glob(directory+'*'+'.txt'))<filenum:
+			# if len(glob.glob(directory+'*'))<filenum:
 			print('\n',directory,'内のファイル数を%d個から%d個に調整します\n'% (get_filenum,filenum))
 			filefiller(directory)
 	else:
-		print('After:Number of Files is',len(glob.glob1(directory,'*'+'.txt')))   #Check number of files
+		print('After: Number of Files is',len(glob.glob1(directory,'*')))   #Check number of files
 		# print('After:Number of Files is',len(globfile(directory,extention='.txt')))   #Check number of files
-		print('ファイル数を288個にできました。グラフ化処理を続行します。')
+		# print('ファイル数を288個にできました。グラフ化処理を続行します。')
 
 
 
@@ -228,3 +230,7 @@ print('After',len(datetimeObject))
 
 
 
+'''TEST3 filefiller.py
+'''
+directory = 'C:/home/python/SAtraceTestSpace/160813/rawdata/trace/'
+filecheck(directory)
