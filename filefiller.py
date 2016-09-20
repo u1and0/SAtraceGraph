@@ -52,25 +52,25 @@ import numpy as np
 import glob
 from itertools import *
 from more_itertools import *
-from datetime import datetime, timedelta
+from datetime import timedelta
 import time
 import matplotlib.dates as pltd
+import pandas as pd
 
 
 
+# def globfile(directory,extention):
+# 	'''
+# 	ディレクトリを引数に
+# 	%Y%m%d_%H%M%S形式のファイルベースネーム返す
+# 	'''
+# 	fullpath=glob.glob(directory+'*'+extention)   #ファイル名をリストに格納
 
-def globfile(directory,extention):
-	'''
-	ディレクトリを引数に
-	%Y%m%d_%H%M%S形式のファイルベースネーム返す
-	'''
-	fullpath=glob.glob(directory+'*'+extention)   #ファイル名をリストに格納
+# 	filename_without_extention=[i[len(directory):-1*len(extention)] for i in fullpath]   #ファイルベースネーム
 
-	filename_without_extention=[i[len(directory):-1*len(extention)] for i in fullpath]   #ファイルベースネーム
+# 	datetimeObject=[datetime.strptime(i,'%Y%m%d_%H%M%S') for i in filename_without_extention]   #要素がdatetime形式のリスト作成
 
-	datetimeObject=[datetime.strptime(i,'%Y%m%d_%H%M%S') for i in filename_without_extention]   #要素がdatetime形式のリスト作成
-
-	return datetimeObject
+# 	return datetimeObject
 
 
 def makefile(fullpath):
@@ -83,51 +83,40 @@ def makefile(fullpath):
 		f.write(c)
 
 
-
-# def makeMiddlePoint(li,delta):
-# 	'''
-# 	引数:
-# 		li:リスト
-# 		delta:datetime
-# 	戻り値：twoの間に入れる値をyield
-# 	'''
-# 	for two in list(pairwise(li)):   #liの中身を2つずつにわける
-# 		if two[-1]-two[0]>=delta +timedelta(minutes=1):   #抜き出したタプルの要素の差がdelta上であれば
-# 			print('\nLack between %s and %s'% (two[0],two[1]))
-# 			print('Substract',abs(two[0]-two[1]))
-# 			for i in pltd.drange(two[0]+delta,two[-1],delta):
-# 				li.insert(li.index(two[-1]),pltd.num2date(i))   #タプルの要素間の場所にdeltaずつ増やした値を入れる
-# 				print('insert',pltd.num2date(i))
-# 				yield pltd.num2date(i).strftime('%Y%m%d_%H%M%S')
-# 	print('\nThere is No point to insert')
-# 	print('makeMiddlePoint END\n')
-
-
-
 def makeMiddlePoint(li,delta):
 	'''
 	引数:
-		li:リスト
-		delta:datetime
-	戻り値：twoの間に入れる値をyield
-	makeMiddlePointは1個ずつしか吐き出さない
-	mainの方でwhileループして穴埋めしていく(makeするたびにglobするから。)
+		li:日付を表した値の入ったリスト
+		delta:datetime.timedelta
+
+	戻り値:
+		insert_point.strftime('%Y%m%d_%H%M%S'):
+			twoの間に入れる値をyield
+			%Y%m%d_%H%M%S形式にして返す
+
+	実行内容:
+		makeMiddlePointは1個ずつしか吐き出さないジェネレータ
 	'''
 	for two in list(pairwise(li)):   #liの中身を2つずつにわける
 		if two[-1]-two[0]>=delta +timedelta(minutes=1):   #抜き出したタプルの要素の差がdelta上であれば
 			print('\nLack between %s and %s'% (two[0],two[1]))
 			print('Substract',abs(two[0]-two[1]))
-			insert_point=pltd.num2date(two[0]+delta)
+			insert_point=two[0]+delta
 			li.insert(li.index(two[-1]),insert_point)   #タプルの要素間の場所にdeltaずつ増やした値を入れる
-			print('insert',pltd.num2date(i))
-		else:
-			print('\nThere is No point to insert')
-			print('makeMiddlePoint END\n')
-		return pltd.num2date(i).strftime('%Y%m%d_%H%M%S')
+			print('insert',insert_point)
+			return insert_point.strftime('%Y%m%d_%H%M%S')
+	# print('\nThere is No point to insert')
+	# print('makeMiddlePoint END\n')
 
 
-
-
+'''TEST makeMiddlePoint
+dali=pd.date_range('20160813', '20160814', freq='5T%sS'%np.random.randint(0,60))
+dali_droped=dali.drop(np.random.choice(dali))
+# daliからランダムな値を抽出(choice)し
+# ランダムな値をdaliから削除
+i = makeMiddlePoint(list(dali_droped), timedelta(minutes=5))
+print(i)
+'''
 
 
 def makeStartPoint(li):
@@ -166,11 +155,14 @@ def filefiller(directory,extention='.txt'):
 	makeStartPoint:最初の要素から00:00に向けて5分間隔でデータ作る
 	makeStopPoint:最後の要素から23:59に向けて5分間隔でデータ作る
 	'''
-	datetimeObject=globfile(directory,extention)
+	filename=glob.glob1(directory,'*' + extention)
+	datetimeObject=[datetime.datetime.strptime(i[:-1*len(extention)],'%Y%m%d_%H%M%S') for i in filename]
+	# datetimeObject=globfile(directory,extention)
 	print('Before:Number of Files is',len(datetimeObject))   #Check number of files
 	print('-'*20)
-	for i in makeMiddlePoint(datetimeObject,timedelta(minutes=5)):   #5分間隔でデータを挿入
-		makefile(directory+i+extention)
+	i = makeMiddlePoint(datetimeObject,timedelta(minutes=5))  #5分間隔でデータを挿入
+	# for i in makeMiddlePoint(datetimeObject,timedelta(minutes=5)):   #5分間隔でデータを挿入
+	makefile(directory+i+extention)
 	print('-'*20)
 	for i in makeStartPoint(datetimeObject):   #始点を作製
 		makefile(directory+i+extention)
@@ -187,9 +179,9 @@ def filecheck(directory):
 	ファイル数288より多い => エラー吐き出して処理中断
 	'''
 	filenum=288
-	while not len(glob.glob(directory+'*'+'.txt'))==filenum:   #globして288個ならココは実行しない
+	while not len(glob.glob1(directory, '*'+'.txt'))==filenum:   #globして288個ならココは実行しない
 		try:
-			get_filenum=len(glob.glob(directory+'*'+'.txt'))
+			get_filenum=len(glob.glob1(directory+'*'+'.txt'))
 			if get_filenum>filenum:   #ファイル数が多すぎればエラー
 				raise ValueError(get_filenum)
 		except ValueError:   #ファイル数が多ければエラー
@@ -201,7 +193,8 @@ def filecheck(directory):
 			print('\n',directory,'内のファイル数を%d個から%d個に調整します\n'% (get_filenum,filenum))
 			filefiller(directory)
 	else:
-		print('After:Number of Files is',len(globfile(directory,extention='.txt')))   #Check number of files
+		print('After:Number of Files is',len(glob.glob1(directory,'*'+'.txt')))   #Check number of files
+		# print('After:Number of Files is',len(globfile(directory,extention='.txt')))   #Check number of files
 		print('ファイル数を288個にできました。グラフ化処理を続行します。')
 
 
