@@ -77,11 +77,14 @@ gnuplotファイルをawkとか使って別のところから引っ張ってき�
 # import sys
 # sys.path.append('./filefiller')  #importできるディレクトリ追加
 import filefiller as ff
+import json
 
-import param
-param=param.param()
-out1=param['out1']    #出力ディレクトリ
-in1=param['in1']    #データソース
+# import param
+# param=param.param()
+with open('parameter.json', 'r') as f:
+    param=json.load(f)
+out=param['out']    #出力ディレクトリ
+inn=param['inn']    #データソース
 
 
 
@@ -112,12 +115,12 @@ for i in dm.dateiter(dateFirst, dateLast):
 	when=i.strftime('%y%m%d')
 	whenlast=(i+d.timedelta(1)).strftime('%y%m%d')  #whenの次の日付
 	print('Date is %s'% when)
-	tracedir=out1+when+'/rawdata/trace/'
+	tracedir=out+when+'/rawdata/trace/'
 
 
 
 	print('\n__描画に使用するコードをコピーする__________________________')
-	cmd='robocopy %s %s%s/code *.plt *.gp /NDL /NFL /NP'% (source1,out1,when)
+	cmd='robocopy %s %s%s/code *.plt *.gp /NDL /NFL /NP'% (source1,out,when)
 	print(cmd)
 	import subprocess as sp
 	sp.call(cmd,shell=True)
@@ -134,14 +137,14 @@ for i in dm.dateiter(dateFirst, dateLast):
 		'waterfall_spectrum.gp'
 		]
 	# rootcall_rewriter(gpfile)    #sedによる、引数を日付と出力先に書き換え
-	rep=(('ARG1','\"'+when+'\"'),('ARG2','\"'+out1+'\"'),('ARG3','\"'+when+'\"'))
+	rep=(('ARG1','\"'+when+'\"'),('ARG2','\"'+out+'\"'),('ARG3','\"'+when+'\"'))
 
 
 	for gpfor in gpfile:
 		sedcmd='sed -e \''
 		for repfor in rep:
 			sedcmd+='s%%%s%%%s%%g; '% (repfor[0],repfor[1])
-		sedcmd+='\' %s%s>%s%s/code/%s'% (source1,gpfor,out1,when,gpfor)    #sed inputfile and outputfile setting
+		sedcmd+='\' %s%s>%s%s/code/%s'% (source1,gpfor,out,when,gpfor)    #sed inputfile and outputfile setting
 		print(sedcmd)
 		# yield sedcmd
 		sp.call(sedcmd,shell=True)
@@ -152,7 +155,7 @@ for i in dm.dateiter(dateFirst, dateLast):
 
 
 	print('\n__生データをコピーする__________________________ ')
-	cmd='ROBOCOPY_tracecopy.bat %s %s %s %s %s'%(when, whenlast,when,out1,in1)
+	cmd='ROBOCOPY_tracecopy.bat %s %s %s %s %s'%(when, whenlast,when,out,inn)
 	print(cmd)
 	sp.call(cmd,shell=True)
 
@@ -167,12 +170,12 @@ for i in dm.dateiter(dateFirst, dateLast):
 					   #たまに289ファイルになっちゃう
 	else:print('ファイルは%d個あるので処理を続行します。' %filenum)
 
-'''
+
 	print('\n__マトリックスデータを作成する__________________________ ')
 	plcmd=[('matrix_dBm.pl','plot_matrix_data.txt'),('matrix_dBmMAX.pl','plot_matrix_dataMAX.txt')]
 	for i in plcmd:
 		plex='perl -w '+i[0]
-		plex+=' %s%s/rawdata/trace/ %s%s/rawdata/'%(out1,when,out1,when)
+		plex+=' %s%s/rawdata/trace/ %s%s/rawdata/'%(out,when,out,when)
 		plex+=i[1]
 		print(plex)
 		os.system(plex)
@@ -184,7 +187,7 @@ for i in dm.dateiter(dateFirst, dateLast):
 	print('\n__マトリックスデータの行列入れ替え版を作成する__________________________ ')
 	plin=[('plot_matrix_data.txt','plot_rixmat_data.txt'),('plot_matrix_dataMAX.txt','plot_rixmat_dataMAX.txt')]
 	for i in plin:
-		plex='perl rowcolumn_changer.pl %s%s/rawdata/%s > %s%s/rawdata/%s'%(out1,when,i[0],out1,when,i[1])
+		plex='perl rowcolumn_changer.pl %s%s/rawdata/%s > %s%s/rawdata/%s'%(out,when,i[0],out,when,i[1])
 		print(plex)
 		os.system(plex)
 
@@ -198,7 +201,7 @@ for i in dm.dateiter(dateFirst, dateLast):
 		'mlt2row_time_power.gp',
 		'waterfall_spectrum.gp']
 	for i in gpcmd:
-		gpex='call gnuplot -p -e "load \'%s%s/code/'%(out1,when)+i+'\'"'
+		gpex='call gnuplot -p -e "load \'%s%s/code/'%(out,when)+i+'\'"'
 		print(gpex)
 		sp.call(gpex,shell=True)
 
@@ -206,7 +209,7 @@ for i in dm.dateiter(dateFirst, dateLast):
 
 
 	print('\n__epsファイルの余白をカットする__________________________ ')
-	out2=out1.replace('/','\\')
+	out2=out.replace('/','\\')
 	cmd='epstool.bat %s%s %s'%(out2,when,when)
 	print(cmd)
 	sp.call(cmd,shell=True)
@@ -217,11 +220,10 @@ for i in dm.dateiter(dateFirst, dateLast):
 
 
 	print('\n__pngif.htmlの中身のタイトル、ファイル名を変えてコピー__________________________')
-	rep=[('_'*5+'title'+'_'*5,when),('_'*5+'date'+'_'*5,when),('_'*5+'outdrct'+'_'*5,out1+when)]
+	rep=[('_'*5+'title'+'_'*5,when),('_'*5+'date'+'_'*5,when),('_'*5+'outdrct'+'_'*5,out+when)]
 	sedcmd='sed -e \''
 	for i in rep:
 		sedcmd+='s%%%s%%%s%%g;'%(i[0],i[1])    #置き換える文字列
-	sedcmd+='\' %spngif.html>%s%s/pngif%s.html'% (source1,out1,when,when)    #入力ファイル名>出力ファイル名
+	sedcmd+='\' %spngif.html>%s%s/pngif%s.html'% (source1,out,when,when)    #入力ファイル名>出力ファイル名
 	print(sedcmd)
 	sp.call(sedcmd,shell=True)
-'''

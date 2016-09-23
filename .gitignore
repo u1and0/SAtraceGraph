@@ -9,6 +9,7 @@
 *.gp
 
 # その他のファイル
-param*.py
+*param*.py
+*.json
 *.sublime-project
 *.sublime-workspace

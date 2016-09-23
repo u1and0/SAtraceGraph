@@ -35,15 +35,16 @@ First commit
 
 __TODO__
 
-* SAtraceGraph main.py(動かすのはmain.bat)動くようになった
-* mian.pyの役割は、今まで動いていたSAtraceGraph_old のmain.batと、日付をループするrun_main.batの役割を合わせたもの
-* SAtraceGraphのgpファイルの一部(外に出したくない情報)はawkで引っ張ってくるなど改良の余地あり
+* count_file
+	* filefiller resultからファイル数カウント？DUMMYファイルの数後から数えるか？
+*  ~~parameter をJSONとしてロードしたい。~~ 
+* ~~SAtraceGraphのgpファイルの一部(外に出したくない情報)はawkで引っ張ってくるなど改良の余地あり~~
 * なぜならgithubにあげられない。開発遅れる
 * SAtraceGraphのpngだけを1フォルダにおきたい
 * SAtraceGraphを他の人にも使わせたい
 	* perl環境のインスコをやらせたくない
 	* epstoolのインスコもやらせたくない
-* SAtraceGraphは自分の環境内でやるならとりあえず完成
+
 
 
 
