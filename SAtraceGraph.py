@@ -167,7 +167,7 @@ for i in dm.dateiter(dateFirst, dateLast):
 					   #たまに289ファイルになっちゃう
 	else:print('ファイルは%d個あるので処理を続行します。' %filenum)
 
-
+'''
 	print('\n__マトリックスデータを作成する__________________________ ')
 	plcmd=[('matrix_dBm.pl','plot_matrix_data.txt'),('matrix_dBmMAX.pl','plot_matrix_dataMAX.txt')]
 	for i in plcmd:
@@ -224,3 +224,4 @@ for i in dm.dateiter(dateFirst, dateLast):
 	sedcmd+='\' %spngif.html>%s%s/pngif%s.html'% (source1,out1,when,when)    #入力ファイル名>出力ファイル名
 	print(sedcmd)
 	sp.call(sedcmd,shell=True)
+'''
