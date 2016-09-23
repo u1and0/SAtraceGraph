@@ -133,8 +133,8 @@ def makeMiddlePoint(li,delta):
 				li.insert(li.index(two[-1]),insert_point)   #タプルの要素間の場所にdeltaずつ増やした値を入れる
 				print('insert',insert_point)
 				yield insert_point.strftime('%Y%m%d_%H%M%S')
-	print('\nThere is No point to insert')
-	print('__makeMiddlePoint END__\n')
+	# print('\nThere is No point to insert')
+	# print('__makeMiddlePoint END__\n')
 
 
 '''TEST makeMiddlePoint
@@ -188,6 +188,8 @@ def filecheck(directory):
 	filenum=288
 	extention='.txt'
 	datetimeObject=datetime_list(directory)
+	print('--Before: Number of Files is %d--' %len(datetimeObject))   #Check number of files
+	print('\n',directory,'内のファイル数を%d個から%d個に調整します\n'% (len(datetimeObject),filenum))
 	for i in makeStartPoint(datetimeObject):  # 始点を作製
 		makefile(directory+i+extention)
 	for i in makeStopPoint(datetimeObject):  # 終点を作製
@@ -195,8 +197,6 @@ def filecheck(directory):
 
 	while not len(glob.glob1(directory, '*'))==filenum:   #globして288個でないなら、288になるまでループ
 		get_filenum=len(glob.glob1(directory, '*'))
-		print('--Before: Number of Files is %d--' %get_filenum)   #Check number of files
-		print('\n',directory,'内のファイル数を%d個から%d個に調整します\n'% (get_filenum,filenum))
 		try:
 			if get_filenum > filenum:   #ファイル数が多すぎればエラー
 				raise ValueError(get_filenum)
