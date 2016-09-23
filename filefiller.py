@@ -17,6 +17,12 @@ datetimeObjectが5分間隔に並ぶように以下を行う
 	makeMiddlePoint()
 	makeStopPoint()
 
+__UPDATE4.0__
+makeMiddlePointはyieldするたびにglobしてファイル数チェック
+ファイル数が288を超えたらエラー出す
+生成した時刻との差が1分未満だったらinsertしない
+
+
 __UPDATE3.2__
 外部ファイルから呼び出せるようにMAINも関数化
 
@@ -184,6 +190,10 @@ def filecheck(directory):
 	ファイル数288 => メッセージを出してfilefiller.py終了
 	ファイル数288未満 => filefillerで288になるまで穴埋め
 	ファイル数288より多い => エラー吐き出して処理中断
+
+	makeMiddlePointはyieldするたびにglobしてファイル数チェック
+	ファイル数が288を超えたらエラー出す
+	生成した時刻との差が1分未満だったらinsertしない
 	'''
 	filenum=288
 	extention='.txt'
