@@ -1,5 +1,5 @@
 # coding: utf-8
-version='filefiller.py ver3.2'
+version='filefiller.py ver4.0'
 '''
 __USAGE__
 directoryにはtxtファイルが詰まったディレクトリ名(最後に/必須)
@@ -181,7 +181,7 @@ def datetime_list(directory,extention='.txt'):
 
 def filecheck(directory):
 	'''
-	ファイル数288 => 何もせずfilefiller.py終了
+	ファイル数288 => メッセージを出してfilefiller.py終了
 	ファイル数288未満 => filefillerで288になるまで穴埋め
 	ファイル数288より多い => エラー吐き出して処理中断
 	'''
@@ -193,10 +193,10 @@ def filecheck(directory):
 	for i in makeStopPoint(datetimeObject):  # 終点を作製
 		makefile(directory+i+extention)
 
-
 	while not len(glob.glob1(directory, '*'))==filenum:   #globして288個でないなら、288になるまでループ
 		get_filenum=len(glob.glob1(directory, '*'))
 		print('--Before: Number of Files is %d--' %get_filenum)   #Check number of files
+		print('\n',directory,'内のファイル数を%d個から%d個に調整します\n'% (get_filenum,filenum))
 		try:
 			if get_filenum > filenum:   #ファイル数が多すぎればエラー
 				raise ValueError(get_filenum)
@@ -206,7 +206,6 @@ def filecheck(directory):
 			raise
 		else:   #ファイル数が少なければファイル埋め
 			# if len(glob.glob(directory+'*'))<filenum:
-			print('\n',directory,'内のファイル数を%d個から%d個に調整します\n'% (get_filenum,filenum))
 			# filefiller(directory)
 			for i in makeMiddlePoint(datetimeObject, timedelta(minutes=5)):
 				makefile(directory+i+extention)
@@ -250,6 +249,6 @@ print('After',len(datetimeObject))
 
 
 '''TEST3 filefiller.py
-'''
 directory = 'C:/home/python/SAtraceTestSpace/160813/rawdata/trace/'
 filecheck(directory)
+'''
