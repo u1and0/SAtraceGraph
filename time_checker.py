@@ -23,7 +23,7 @@ def tracefile(dirname):
     あるファイル名から次のファイルが作成された時刻の差分を出す。
 
     __ACTION__
-    SAtraceGraph.pyのサブプロセスのfilecheck.pyでエラーが生じたときに実行される。
+    SAtraceGraph.pyのサブプロセスのfilefiller.filecheck()でエラーが生じたときに実行される。
 
     __UPDATE1.0__
     First commit
@@ -33,16 +33,16 @@ def tracefile(dirname):
 
     __TEST__
 
-    >>> tracefile(param['out']+'/160817/rawdata/trace/')
+    >>> [i for i in tracefile(param['out']+'/160817/rawdata/trace/')]
     (datetime.datetime(1900, 1, 1, 8, 50, 29), datetime.datetime(1900, 1, 1, 8, 59, 12))
 
     '''
     line = glob.glob1(dirname, '*')
-    ttlist = [datetime.datetime.strptime(i[9:15], '%H%M%S') for i in line]
+    ttlist = [datetime.datetime.strptime(i[:-4], '%Y%m%d_%H%M%S') for i in line]
     for timepair in pairwise(ttlist):
         sub = timepair[1] - timepair[0]
         if not datetime.timedelta(minutes=4) < sub < datetime.timedelta(minutes=6):
-            return timepair  # 時間差の生じたとこ
+            yield timepair  # 時間差の生じたとこ
 
 
 if __name__ == '__main__':

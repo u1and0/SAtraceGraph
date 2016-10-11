@@ -59,6 +59,9 @@ import glob
 from more_itertools import pairwise
 from datetime import timedelta
 from datetime import datetime
+# __USER MODULES__________________________
+from time_checker import tracefile
+
 version = 'filefiller.py ver4.0'
 
 
@@ -173,6 +176,11 @@ def filecheck(directory):
         except ValueError:
             print('ファイル数が%d個！処理を中断します。' % get_filenum)
             print('生データを編集して、"%s/code"内にあるgpファイルを手動で動かしてください。' % directory)
+            for time_difference_tuple in tracefile(directory):
+                print('\nヒント！')
+                print('時間差', time_difference_tuple[1] - time_difference_tuple[0])
+                print('時間差エラーの生じた時刻', time_difference_tuple)
+                print('')
             raise
         else:  # ファイル数が少なければファイル埋め
             # if len(glob.glob(directory+'*'))<filenum:
