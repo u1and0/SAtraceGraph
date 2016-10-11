@@ -146,10 +146,10 @@ gnuplotファイルをawkとか使って別のところから引っ張ってき�
 import subprocess as sp
 import glob
 import os
-import datetime
+from datetime import timedelta
+import pandas as pd
 # __INSTALLED MODULE__________________________
 import simplejson
-
 # __USER MODULE__________________________
 import filefiller as ff
 import datemaster as dm  # 最初と最後の日付(yymmdd形式)を引数に、その間の日付をイテレータとして返す
@@ -159,26 +159,19 @@ with open('parameter.json', 'r') as f:
     param = simplejson.load(f)
 out = param['out']  # 出力ディレクトリ
 inn = param['inn']  # データソース
-
-
-# source1 = os.getcwd() + '\\'  # このファイルのワーキングディレクトリ
-# source1 = source1.replace('\\', '/')  # バックスラッシュ、スラッシュ変換
-
+source1 = os.getcwd() + '\\'  # このファイルのワーキングディレクトリ
+source1 = source1.replace('\\', '/')  # バックスラッシュ、スラッシュ変換
 
 # __DATE DEFINITION__________________________
-# 日付の指定
-# yymmdd形式をmain.batに渡す
-
 date1 = dm.dateinput('グラフ化する最初の日付(yymmdd)を入力>>> ')
 date2 = dm.dateinput('グラフ化する最後の日付(yymmdd)を入力>>> ')
-[dateFirst, dateLast] = dm.datesort(date1, date2)
-
-d = datetime
+# [dateFirst, dateLast] = dm.datesort(date1, date2)
 
 
-for i in dm.dateiter(dateFirst, dateLast):
-    when = i.strftime('%y%m%d')
-    whenlast = (i + d.timedelta(1)).strftime('%y%m%d')  # whenの次の日付
+# __MAKE GRAPH LOOP__________________________
+for i in pd.date_range(date1, date2):
+    when = i.strftime('%y%m%d')  # datetime形式をyymmddの文字列に変える
+    whenlast = (i + timedelta(1)).strftime('%y%m%d')  # whenの次の日付
     print('Date is %s' % when)
     tracedir = out + when + '/rawdata/trace/'
 
