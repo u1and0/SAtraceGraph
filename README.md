@@ -27,6 +27,13 @@ __ACTION__
 
 
 
+__UPDATE v1.2__
+
+* パラメータをjsonファイルから読み込む
+> parameter.json
+* PEP8に準拠
+
+
 __UPDATE v1.0__
 
 First commit
@@ -37,12 +44,12 @@ __TODO__
 
 * count_file
 	* filefiller resultからファイル数カウント？DUMMYファイルの数後から数えるか？
-*  ~~parameter をJSONとしてロードしたい。~~ 
-* ~~SAtraceGraphのgpファイルの一部(外に出したくない情報)はawkで引っ張ってくるなど改良の余地あり~~
-* なぜならgithubにあげられない。開発遅れる
 * SAtraceGraphのpngだけを1フォルダにおきたい
 * SAtraceGraphを他の人にも使わせたい
 	* perl環境のインスコをやらせたくない
+	* perlスクリプトをpythonで書く
+		* matrix_dBm.py
+		* rowcolumn_changer.py
 	* epstoolのインスコもやらせたくない
 
 
