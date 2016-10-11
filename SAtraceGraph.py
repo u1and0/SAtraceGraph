@@ -210,7 +210,7 @@ for i in pd.date_range(date1, date2):
     print('\n__データ数を288個にする__________________________ ')
     filenum = len(glob.glob(tracedir + '*.txt'))
     print('グラフ化対象のファイル数 %d個' % filenum)
-    if not filenum == 288:
+    if not filenum == 288:  # 手動でファイル数を調整したときに必要なif文
         ff.filecheck(tracedir)  # ファイル名から時刻差分をとってダミーファイルの作成、リネームしてくれる
         # たまに289ファイルになっちゃう
     else:

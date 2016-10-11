@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-## filefiller.py v1.0
+## filefiller.py v5.0
 
 __USAGE__
 directoryにはtxtファイルが詰まったディレクトリ名(最後に/必須)
@@ -17,6 +17,11 @@ datetimeObjectが5分間隔に並ぶように以下を行う
     makeStartPoint()
     makeMiddlePoint()
     makeStopPoint()
+
+__UPDATE5.0__
+time_checker.pyでtime_difference_tupleを返してくる
+filefillerでエラーが発生したとき(288よりファイル数が多くなったとき)、そのときの時刻を標準出力に表示する
+
 
 __UPDATE4.0__
 makeMiddlePointはyieldするたびにglobしてファイル数チェック
@@ -59,6 +64,9 @@ import glob
 from more_itertools import pairwise
 from datetime import timedelta
 from datetime import datetime
+# __USER MODULES__________________________
+from time_checker import tracefile
+
 version = 'filefiller.py ver4.0'
 
 
@@ -173,6 +181,11 @@ def filecheck(directory):
         except ValueError:
             print('ファイル数が%d個！処理を中断します。' % get_filenum)
             print('生データを編集して、"%s/code"内にあるgpファイルを手動で動かしてください。' % directory)
+            for time_difference_tuple in tracefile(directory):
+                print('\nヒント！')
+                print('時間差', time_difference_tuple[1] - time_difference_tuple[0])
+                print('時間差エラーの生じた時刻', time_difference_tuple)
+                print('')
             raise
         else:  # ファイル数が少なければファイル埋め
             # if len(glob.glob(directory+'*'))<filenum:
