@@ -2,6 +2,7 @@
 ## main.py ver1.2
 
 __USAGE__
+
 * 引数:ユーザー入力
     * 最初の日付:yymmdd形式
     * 最後の日付:yymmdd形式
@@ -114,14 +115,14 @@ __ACTION__
 
 
 __UPDATE1.2__
-paramert.jsonからパラメータを引いてくる(param['inn'], param['out'] )
-文法をPEP8に準拠
+* paramert.jsonからパラメータを引いてくる(param['inn'], param['out'] )
+* 文法をPEP8に準拠
+日付のイテレーションをユーザーモジュール`datemaster.dateiter()`から`pandas.date_range()`に変更
 
 __UPDATE1.1__
 * dateのチェック関数`dateinput(comment)`追加
     * 基本はinputコマンド
     6文字の数字かつ日付に変換できるstr形式が入力されるまで無限ループで入力を施して* くる
-* 
 * 入力された日付のソート`datesort(*arg)`追加
     * 複数の引数*args(str形式yymmdd型)を
     * 日付フォーマットに直して
