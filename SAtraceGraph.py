@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
 ## main.py ver1.2
 
@@ -99,7 +100,7 @@ __ACTION__
 
 
 
-# sed
+### sed
     rootcall_rewriter.plの代わりに、gpファイルの引数(ARG1,ARG2,ARG3)を日付と出力先に書き換える
 
     ```

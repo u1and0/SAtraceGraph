@@ -1,39 +1,37 @@
-'''
-## dateiter ver1.1
-
-__USAGE__
-ジェネレータ式に引数date1, date2(ともに文字列yymmdd形式の日付)を入れる
-戻り値 イテレータとしてdatetime形式ddate1が返される
-
-__INTRODUCTION__
-date1からdate2の日付を一日ずつイテレータで出力
-
-__ACTION__
-1. date2がNoneであればdate1と同じにする
-2. 引数をdatetime形式に変換
-3. ddate1, ddate2の大きさ検証(小→大の順番になっているか)、ddate1がddate2と同じになるまで以下を実行
-    3.1. datetime形式のddate1をyeild
-    3.2. ddate1に1日足す
-
-__UPDATE1.1__
-* yyyymmdd形式で返す
-> pandas.date_rangeで使用したいので
-* datesortは御役御免
-
-__UPDATE1.0__
-First commit
-
-
-
-__TODO__
-None
-'''
+# -*- coding: utf-8 -*-
 import datetime
 d = datetime
 
-
 def dateiter(date1, date2):
-    '''date1からdate2の日付を一日ずつイテレータで出力'''
+    '''
+    ## dateiter ver1.1
+
+    __USAGE__
+    ジェネレータ式に引数date1, date2(ともに文字列yymmdd形式の日付)を入れる
+    戻り値 イテレータとしてdatetime形式ddate1が返される
+
+    __INTRODUCTION__
+    date1からdate2の日付を一日ずつイテレータで出力
+
+    __ACTION__
+    1. date2がNoneであればdate1と同じにする
+    2. 引数をdatetime形式に変換
+    3. ddate1, ddate2の大きさ検証(小→大の順番になっているか)、ddate1がddate2と同じになるまで以下を実行
+        3.1. datetime形式のddate1をyeild
+        3.2. ddate1に1日足す
+
+    __UPDATE1.1__
+    * yyyymmdd形式で返す
+    > pandas.date_rangeで使用したいので
+    * datesortは御役御免
+
+    __UPDATE1.0__
+    First commit
+
+
+
+    __TODO__
+    '''
     if not date2:
         date2 = date1
     ddate1 = d.datetime.strptime(date1, '%y%m%d')  # 文字列をdatetimeに変換

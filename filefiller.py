@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 '''
+## filefiller.py v1.0
+
 __USAGE__
 directoryにはtxtファイルが詰まったディレクトリ名(最後に/必須)
 extentionには拡張子
