@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-## filefiller.py v1.0
+## filefiller.py v5.0
 
 __USAGE__
 directoryにはtxtファイルが詰まったディレクトリ名(最後に/必須)
@@ -17,6 +17,11 @@ datetimeObjectが5分間隔に並ぶように以下を行う
     makeStartPoint()
     makeMiddlePoint()
     makeStopPoint()
+
+__UPDATE5.0__
+time_checker.pyでtime_difference_tupleを返してくる
+filefillerでエラーが発生したとき(288よりファイル数が多くなったとき)、そのときの時刻を標準出力に表示する
+
 
 __UPDATE4.0__
 makeMiddlePointはyieldするたびにglobしてファイル数チェック
