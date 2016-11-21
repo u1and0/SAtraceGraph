@@ -182,14 +182,14 @@ for i in pd.date_range(date1, date2):
     sp.call(cmd, shell=True)
 
     print('\n__グラフ描画に使うコードを書き換えコピーする__________________________')
+    """sedによる、引数を日付と出力先に書き換え"""
     gpfile = [
-        # 'mat1d.plt',
+        'mat1d.plt',
         'allplt_wtf.gp',
-        # 'allplt_wtfMAX.gp',
-        # 'mlt2row_time_power.gp',
-        # 'waterfall_spectrum.gp'
+        'allplt_wtfMAX.gp',
+        'mlt2row_time_power.gp',
+        'waterfall_spectrum.gp'
     ]
-    # rootcall_rewriter(gpfile)    #sedによる、引数を日付と出力先に書き換え
     rep = (('ARG1', '\"' + when + '\"'), ('ARG2', '\"' + out + '\"'), ('ARG3', '\"' + when + '\"'))
 
     for gpfor in gpfile:
@@ -236,9 +236,10 @@ for i in pd.date_range(date1, date2):
         os.system(plex)
 
     print('\n__gnuplotによるグラフ描画__________________________')
+    """`out/when/code`以下のディレクトリに保存された`.gp`ファイルをgpcmdの順番で逐次処理していく"""
     gpcmd = (
-            #'mat1d.plt',
-             'allplt_wtf.gp',
+            # 'mat1d.plt',
+             # 'allplt_wtf.gp',
              'allplt_wtfMAX.gp',
              # 'mlt2row_time_power.gp',
              # 'waterfall_spectrum.gp']
