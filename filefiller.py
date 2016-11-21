@@ -60,21 +60,27 @@ makeMiddlePoint()が不完全
 '''
 
 
+# __BUILTIN MODULES__________________________
 import glob
 from more_itertools import pairwise
 from datetime import timedelta
 from datetime import datetime
 # __USER MODULES__________________________
 from time_checker import tracefile
+# __PARAMETER__________________________
+import json
+with open('parameter.json', 'r') as f:
+    param = json.load(f)
 
-version = 'filefiller.py ver4.0'
+version = 'filefiller.py ver4.1'
 
 
 def makefile(fullpath):
     '''ダミーデータ書き込む'''
+    linenum = param['swe_poin']
     with open(fullpath, mode='w') as f:
         c = '# <This is DUMMY DATA made by %s>\n' % version
-        for i in range(1001):
+        for i in range(linenum):
             c += str(i).rjust(6) + ('-1000.00'.rjust(11)) * 3 + '\n'
         c += '# <eof>\n'
         f.write(c)
