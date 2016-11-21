@@ -183,11 +183,12 @@ for i in pd.date_range(date1, date2):
     sp.call(cmd, shell=True)
 
     print('\n__グラフ描画に使うコードを書き換えコピーする__________________________')
-    gpfile = ['mat1d.plt',
+    gpfile = [
+              # 'mat1d.plt',
               'allplt_wtf.gp',
-              'allplt_wtfMAX.gp',
-              'mlt2row_time_power.gp',
-              'waterfall_spectrum.gp'
+              # 'allplt_wtfMAX.gp',
+              # 'mlt2row_time_power.gp',
+              # 'waterfall_spectrum.gp'
               ]
     # rootcall_rewriter(gpfile)    #sedによる、引数を日付と出力先に書き換え
     rep = (('ARG1', '\"' + when + '\"'), ('ARG2', '\"' + out + '\"'), ('ARG3', '\"' + when + '\"'))
