@@ -239,10 +239,10 @@ for i in pd.date_range(date1, date2):
     """`out/when/code`以下のディレクトリに保存された`.gp`ファイルをgpcmdの順番で逐次処理していく"""
     gpcmd = (
             # 'mat1d.plt',
-             # 'allplt_wtf.gp',
+             'allplt_wtf.gp',
              'allplt_wtfMAX.gp',
              # 'mlt2row_time_power.gp',
-             # 'waterfall_spectrum.gp']
+             # 'waterfall_spectrum.gp'
              )
     for i in gpcmd:
         gpex = 'call gnuplot -p -e "load \'%s%s/code/' % (out, when) + i + '\'"'
