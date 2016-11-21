@@ -150,15 +150,14 @@ import glob
 import os
 from datetime import timedelta
 import pandas as pd
-# __INSTALLED MODULE__________________________
-import simplejson
 # __USER MODULE__________________________
 import filefiller as ff
 import datemaster as dm  # 最初と最後の日付(yymmdd形式)を引数に、その間の日付をイテレータとして返す
 
 # __PARAMETER__________________________
+import json
 with open('parameter.json', 'r') as f:
-    param = simplejson.load(f)
+    param = json.load(f)
 out = param['out']  # 出力ディレクトリ
 inn = param['inn']  # データソース
 source1 = os.getcwd() + '\\'  # このファイルのワーキングディレクトリ
@@ -183,13 +182,14 @@ for i in pd.date_range(date1, date2):
     sp.call(cmd, shell=True)
 
     print('\n__グラフ描画に使うコードを書き換えコピーする__________________________')
-    gpfile = ['mat1d.plt',
-              'allplt_wtf.gp',
-              'allplt_wtfMAX.gp',
-              'mlt2row_time_power.gp',
-              'waterfall_spectrum.gp'
-              ]
-    # rootcall_rewriter(gpfile)    #sedによる、引数を日付と出力先に書き換え
+    """sedによる、引数を日付と出力先に書き換え"""
+    gpfile = [
+        'mat1d.plt',
+        'allplt_wtf.gp',
+        'allplt_wtfMAX.gp',
+        'mlt2row_time_power.gp',
+        'waterfall_spectrum.gp'
+    ]
     rep = (('ARG1', '\"' + when + '\"'), ('ARG2', '\"' + out + '\"'), ('ARG3', '\"' + when + '\"'))
 
     for gpfor in gpfile:
@@ -212,7 +212,6 @@ for i in pd.date_range(date1, date2):
     print('グラフ化対象のファイル数 %d個' % filenum)
     if not filenum == 288:  # 手動でファイル数を調整したときに必要なif文
         ff.filecheck(tracedir)  # ファイル名から時刻差分をとってダミーファイルの作成、リネームしてくれる
-        # たまに289ファイルになっちゃう
     else:
         print('ファイルは%d個あるので処理を続行します。' % filenum)
 
@@ -237,11 +236,14 @@ for i in pd.date_range(date1, date2):
         os.system(plex)
 
     print('\n__gnuplotによるグラフ描画__________________________')
-    gpcmd = ['mat1d.plt',
+    """`out/when/code`以下のディレクトリに保存された`.gp`ファイルをgpcmdの順番で逐次処理していく"""
+    gpcmd = (
+            # 'mat1d.plt',
              'allplt_wtf.gp',
              'allplt_wtfMAX.gp',
-             'mlt2row_time_power.gp',
-             'waterfall_spectrum.gp']
+             # 'mlt2row_time_power.gp',
+             # 'waterfall_spectrum.gp'
+             )
     for i in gpcmd:
         gpex = 'call gnuplot -p -e "load \'%s%s/code/' % (out, when) + i + '\'"'
         print(gpex)
